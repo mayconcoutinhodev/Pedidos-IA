@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Conversation {
+  id           String    @id @default(cuid())
+  customer     String
+  status       String    @default("collecting")
+  currentOrder String?
+  messages     Message[]
+  order        Order?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String       // "user" | "assistant"
+  content        String
+  createdAt      DateTime     @default(now())
+}
+
+// Pedido finalizado (criado quando cliente confirma via chat).
+// conversationId é opcional para compatibilidade com rota legada /api/order.
+model Order {
+  id             String        @id @default(cuid())
+  conversationId String?       @unique
+  conversation   Conversation? @relation(fields: [conversationId], references: [id])
+  customer       String
+  rawText        String
+  items          String        // JSON: [{ "produto": string, "quantidade": number }]
+  deliveryDate   String
+  // Status gerenciado pelo admin: pending | confirmed | finalized
+  adminStatus    String        @default("pending")
+  // Itens do pedido que não estavam no catálogo de produtos (JSON: string[])
+  unknownItems   String        @default("[]")
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+// Catálogo de produtos do estoque do administrador
+model Product {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  unit      String?  // ex: "caixa", "fardo", "kg", "litro"
+  createdAt DateTime @default(now())
+}
