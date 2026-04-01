@@ -10,11 +10,11 @@ const MAX_REQUESTS = 30;
 // Limpa entradas expiradas a cada 5 minutos
 setInterval(() => {
   const now = Date.now();
-  for (const [key, entry] of store.entries()) {
+  Array.from(store.entries()).forEach(([key, entry]) => {
     if (now - entry.windowStart > WINDOW_MS) {
       store.delete(key);
     }
-  }
+  });
 }, 5 * 60 * 1000);
 
 export interface RateLimitResult {
