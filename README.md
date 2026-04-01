@@ -2,6 +2,14 @@
 
 Monólito fullstack para recebimento, processamento e gerenciamento de pedidos via chat com IA.
 
+### 1. Tela Chat
+
+<img width="2559" height="1311" alt="Captura de tela 2026-04-01 160717" src="https://github.com/user-attachments/assets/6a60acf5-3c46-4405-9ee0-2153e1b69784" />
+
+### 2. Tela Admin 
+
+<img width="2558" height="1306" alt="Captura de tela 2026-04-01 160728" src="https://github.com/user-attachments/assets/03f56d84-c317-4c9d-b40a-1ea6735f01ae" />
+
 ---
 
 ## Instruções de Execução
