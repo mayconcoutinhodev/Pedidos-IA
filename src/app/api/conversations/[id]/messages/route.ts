@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { processConversation } from "@/lib/ai";
 import { getUnknownItems } from "@/lib/inventory";
 import { safeGetProducts, safeUpsertOrder, safeUpdateOrderCustomer } from "@/lib/prisma-safe";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limiter";
+import { checkTopic, isConversationBlocked } from "@/lib/topic-guard";
 
 // ─── POST /api/conversations/:id/messages ─────────────────────────────────────
 // Body: { message: string }
@@ -11,12 +13,45 @@ export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  // Rate limiting
+  const ip = getClientIp(request);
+  const rateLimit = checkRateLimit(ip);
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Limite de requisições atingido. Tente novamente em instantes." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(Math.ceil(rateLimit.resetInMs / 1000)),
+          "X-RateLimit-Remaining": "0",
+        },
+      }
+    );
+  }
+
+  // Verifica bloqueio por tentativas fora do tema
+  if (isConversationBlocked(params.id)) {
+    return NextResponse.json(
+      { error: "Esta conversa foi bloqueada por excesso de mensagens fora do tema de pedidos." },
+      { status: 403 }
+    );
+  }
+
   try {
     const body = await request.json();
     const message: string = body?.message?.trim();
 
     if (!message) {
       return NextResponse.json({ error: "O campo 'message' é obrigatório." }, { status: 400 });
+    }
+
+    // Verifica tema da mensagem
+    const topicResult = checkTopic(params.id, message);
+    if (topicResult.isOffTopic) {
+      return NextResponse.json(
+        { error: topicResult.warningMessage },
+        { status: topicResult.blocked ? 403 : 422 }
+      );
     }
 
     // 1. Carrega a conversa com histórico

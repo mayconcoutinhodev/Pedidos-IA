@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { processConversation } from "@/lib/ai";
 import { getUnknownItems } from "@/lib/inventory";
 import { safeGetProducts, safeUpsertOrder } from "@/lib/prisma-safe";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limiter";
 
 function serializeConversation(conv: {
   id: string;
@@ -47,6 +48,22 @@ export async function GET() {
 // ─── POST /api/conversations ───────────────────────────────────────────────────
 // Body: { customer: string, message: string }
 export async function POST(request: NextRequest) {
+  // Rate limiting
+  const ip = getClientIp(request);
+  const rateLimit = checkRateLimit(ip);
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Limite de requisições atingido. Tente novamente em instantes." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(Math.ceil(rateLimit.resetInMs / 1000)),
+          "X-RateLimit-Remaining": "0",
+        },
+      }
+    );
+  }
+
   try {
     const body = await request.json();
     const customer: string = body?.customer?.trim();
