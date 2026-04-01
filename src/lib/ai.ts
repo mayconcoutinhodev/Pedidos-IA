@@ -9,18 +9,21 @@ export const AIResponseSchema = z.object({
   order: z
     .object({
       cliente: z.string().min(1),
-      itens: z
-        .array(
-          z.object({
-            produto: z.string().min(1),
-            quantidade: z.number().int().positive(),
-          })
-        )
-        .min(1),
-      // null enquanto a data ainda não foi informada
-      data_entrega: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
+      itens: z.array(
+        z.object({
+          produto: z.string().min(1),
+          quantidade: z.number().int().positive(),
+        })
+      ),
+      // null ou string vazia enquanto a data ainda não foi informada
+      data_entrega: z
+        .string()
+        .nullable()
+        .transform((v) => (v && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null)),
     })
-    .nullable(),
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
   status: z.enum(["collecting", "awaiting_confirmation", "confirmed", "cancelled"]),
   // Preenchido pela IA quando o cliente informa o nome real após validação
   updatedCustomerName: z.string().nullable().optional(),
