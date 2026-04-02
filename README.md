@@ -69,7 +69,18 @@ Verifiquei consistência do JSON gerado
 Adicionei validações para evitar respostas inválidas
 Revisei todo código gerado antes de integrar
 
----
+
+## Aderência ao desafio
+
+Embora a aplicação tenha sido expandida para um fluxo conversacional mais próximo de um cenário real, ela atende aos requisitos centrais do desafio:
+
+- Recebe pedidos em texto livre pelo chat
+- Estrutura automaticamente os dados do pedido com IA
+- Persiste os pedidos em banco SQLite
+- Permite visualização e gestão dos pedidos pela interface administrativa
+
+Optei por organizar o domínio em torno de conversas e pedidos, em vez de expor apenas rotas isoladas de pedido, para demonstrar um fluxo mais realista de coleta, confirmação e gestão.
+
 
 ## Instruções de Execução
 
