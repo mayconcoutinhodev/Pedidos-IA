@@ -12,6 +12,65 @@ Monólito fullstack para recebimento, processamento e gerenciamento de pedidos v
 
 ---
 
+
+# Como usei IA no desenvolvimento
+
+Utilizei IA (ChatGPT) como ferramenta de aceleração e apoio em decisões técnicas, mas com revisão manual em todas as etapas.
+
+## 1. Definição do problema e escopo
+
+Usei IA para interpretar o desafio e identificar entidades principais (pedido, itens, conversa).
+Avaliei com a IA diferentes abordagens (CRUD simples vs fluxo conversacional).
+Decisão final foi manual: optei por fluxo conversacional para simular cenário real.
+
+## 2. Arquitetura
+
+IA sugeriu separação entre parsing, estado da conversa e persistência.
+Refinamento manual: adaptei para um monólito em Next.js 14 para reduzir complexidade e tempo de entrega.
+Decisão consciente de usar SQLite + Prisma pela simplicidade.
+
+## 3. Parsing com IA
+
+IA ajudou a estruturar o prompt para extração de dados em JSON.
+Defini explicitamente o formato esperado (produto, quantidade, data, cliente).
+Ajustei o prompt manualmente para evitar respostas ambíguas e melhorar consistência.
+
+## 4. Validação de dados
+
+IA sugeriu estrutura inicial de validação.
+Corrigi manualmente usando Zod para garantir tipagem forte e evitar dados inválidos vindos da IA.
+
+## 5. Geração de código
+
+IA foi usada para acelerar:
+criação de endpoints
+estrutura inicial de componentes React
+Todo código foi revisado e ajustado manualmente antes de ser utilizado.
+
+## 6. UI/UX
+
+IA sugeriu estrutura básica de interface (chat + painel admin).
+Refinamento manual focado em clareza de fluxo e usabilidade.
+
+## 7. Debug e correções
+
+Usei IA para identificar possíveis causas de erros.
+Validação final sempre manual (logs, testes e inspeção de dados).
+Onde a IA errou e como corrigi
+IA gerou parsing inconsistente para múltiplos itens
+- Corrigi reforçando o prompt e adicionando validação com Zod
+IA sugeriu estrutura muito genérica para pedidos
+- Ajustei para refletir melhor o domínio (itens, status, confirmação)
+IA não tratava corretamente estados da conversa
+- Implementei controle manual de fluxo (início → coleta → confirmação)
+Como validei o uso da IA
+Testei manualmente múltiplos inputs de texto livre
+Verifiquei consistência do JSON gerado
+Adicionei validações para evitar respostas inválidas
+Revisei todo código gerado antes de integrar
+
+---
+
 ## Instruções de Execução
 
 ### Pré-requisitos
