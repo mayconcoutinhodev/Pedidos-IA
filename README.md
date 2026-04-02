@@ -215,7 +215,7 @@ Regras:
 - Se nenhuma data for mencionada, use a data de hoje + 1 dia
 - Não inclua nenhum texto fora do JSON"
 
-Pedido: 'Quero 10 caixas de leite integral e 5 fardos de água para amanhã'"
+> Pedido: 'Quero 10 caixas de leite integral e 5 fardos de água para amanhã'"
 
 
 
