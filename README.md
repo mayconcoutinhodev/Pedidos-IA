@@ -196,12 +196,24 @@ collecting → awaiting_confirmation → confirmed
 
 Prompt usado para extração de pedidos:
 
-"Extraia os dados do pedido abaixo e retorne APENAS JSON no formato:
+"Você é um assistente especializado em estruturar pedidos comerciais em português.
+Analise o texto fornecido e extraia as informações do pedido.
+
+Retorne APENAS um objeto JSON válido com a seguinte estrutura:
 {
-  cliente: string,
-  itens: [{ produto: string, quantidade: number }],
-  data_entrega: string (YYYY-MM-DD)
+  "cliente": "nome do cliente ou 'desconhecido' se não mencionado",
+  "itens": [
+    { "produto": "nome do produto", "quantidade": número_inteiro }
+  ],
+  "data_entrega": "YYYY-MM-DD"
 }
+
+Regras:
+- "cliente": extraia o nome se mencionado, caso contrário use "desconhecido"
+- "itens": liste todos os produtos com suas quantidades como números inteiros
+- "data_entrega": converta expressões como "amanhã", "próxima sexta" para o formato YYYY-MM-DD usando a data de hoje como referência
+- Se nenhuma data for mencionada, use a data de hoje + 1 dia
+- Não inclua nenhum texto fora do JSON"
 
 Pedido: 'Quero 10 caixas de leite integral e 5 fardos de água para amanhã'"
 
