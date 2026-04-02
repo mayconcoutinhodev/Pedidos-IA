@@ -192,6 +192,21 @@ collecting → awaiting_confirmation → confirmed
 | Correspondência de produtos | A lista do catálogo é enviada no prompt; a IA faz o match silenciosamente ("cafe" → "café") |
 | Continuidade da conversa | O histórico completo é enviado a cada turno, permitindo contexto sem estado no servidor |
 
+## Exemplo de prompt utilizado
+
+Prompt usado para extração de pedidos:
+
+"Extraia os dados do pedido abaixo e retorne APENAS JSON no formato:
+{
+  cliente: string,
+  itens: [{ produto: string, quantidade: number }],
+  data_entrega: string (YYYY-MM-DD)
+}
+
+Pedido: 'Quero 10 caixas de leite integral e 5 fardos de água para amanhã'"
+
+
+
 ### Validação das respostas
 
 O JSON retornado pela IA é validado com **Zod** antes de qualquer operação no banco:
